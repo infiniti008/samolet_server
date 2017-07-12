@@ -1,0 +1,13 @@
+#cur_mode{
+    position:absolute;
+    display:none;
+}
+
+#menu > form input[type="submit"]{
+    margin-left:50%;
+    transform: translateX(-50%);
+}
+#menu{
+    border:1px solid black;
+    width:200px;
+}

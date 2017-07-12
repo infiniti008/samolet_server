@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="index.css" type="text/css"/>
+        <script type="text/javascript" src="index.js"></script>
+    </head>
+    <body onload="onload()">
+        <div id="menu">
+            <form id="form_mode" method="GET" action="/change_mode">
+                <input id="input_mode_1" type="radio" name="mode" value="1" form="form_mode"/>
+                <label for="input_mode_1">Режим "Работа"</label><br>
+                <input id="input_mode_2" type="radio" name="mode" value="2" form="form_mode"/>
+                <label for="input_mode_2">Режим "Отладка"</label><br>
+                <input id="input_mode_3" type="radio" name="mode" value="3" form="form_mode"/>
+                <label for="input_mode_3">Режим "Ночной"</label><br>
+                <input type="submit" value="Применить"/>
+            </form>
+        </div>
+        <div id="cur_mode">{{cur_mode}}</div>
+    </body>
+</html>

@@ -1,26 +1,33 @@
 var express = require('express');
 var fs = require('fs');
 var config = require('./config.json');
-var cur_mode = '1';
-
-var pogoda_data = {
-    uri : 'http://rp5.by/%D0%9F%D0%BE%D0%B3%D0%BE%D0%B4%D0%B0_%D0%B2_%D0%9C%D0%B8%D0%BD%D1%81%D0%BA%D0%B5,_%D0%91%D0%B5%D0%BB%D0%B0%D1%80%D1%83%D1%81%D1%8C',
-    sun_up : '#forecastTable > tbody > tr:nth-child(12) > td:nth-child(4).grey',
-    sun_down : '#forecastTable > tbody > tr:nth-child(12) > td:nth-child(5).litegrey'
-};
-
 var request = require('request'), cheerio = require('cheerio');
+var cur_mode = '1';
+var time_after_zakat = 20;
 
-//Загружаем страницу
-request({uri:pogoda_data.uri, method:'GET', encoding:'binary'},
-    function (err, res, page) {
-        //Передаём страницу в cheerio
-        var $=cheerio.load(page);
-        //Идём по DOM-дереву обычными CSS-селекторами
-        var img_src=$(pogoda_data.sun_down).text();
-        console.log(img_src);
-    });
-    
+var pogoda_data = require('./pogoda_data.json');
+var sun = {};
+
+
+function get_pogoda(cb){
+    //Загружаем страницу
+    request({uri:pogoda_data.today.uri, method:'GET', encoding:'binary'},
+        function (err, res, page) {
+            //Передаём страницу в cheerio
+            var $=cheerio.load(page);
+            //Идём по DOM-дереву обычными CSS-селекторами
+            sun.up = $(pogoda_data.today.sun_up).text();
+            
+            var t = sun.up.split(':');
+            sun.up_min = (+t[0]) * 60 + (+t[1]) * 1;
+            sun.down = $(pogoda_data.today.sun_down).text();
+            var p = sun.down.split(':');
+            sun.down_min = (+p[0]) * 60 + (+p[1]) * 1;
+            console.log(sun);
+            cb();
+        }
+    );
+}    
 var app = express();
 app.use(express.static(__dirname + '/public'));
 // app.use('/source', express.static('/home/android/linux_list/so'));
@@ -33,7 +40,39 @@ app.listen(config.port, function () {
 app.get('/put_temp',function (req, res) {
     console.log(req.query);
     var new_date = new Date();
-    var hour
-    res.end(cur_mode);
-});
+    var hour = new_date.getHours();
+    var minute = new_date.getMinutes();
+    var cur_time = (hour * 60) + (minute * 1);
+    console.log(cur_time);
+    get_pogoda(function () {
+        if (cur_time + 400> sun.down_min + time_after_zakat) {
+            cur_mode = '2';
+        }
+        console.log(cur_mode);
+        // res.end(cur_mode);
+        
+        var file = fs.readFileSync(__dirname + '/index.html', 'utf8').toString();
+        file = file.replace(/{{cur_mode}}/ig, cur_mode);
+        res.end(file);
+    });
     
+});
+
+app.get('/',function (req, res) {
+    var file = fs.readFileSync(__dirname + '/index.html', 'utf8').toString();
+        file = file.replace(/{{cur_mode}}/ig, cur_mode);
+        res.end(file);
+});
+
+var n_res;
+
+app.get('/change_mode',function (req, res) {
+    var new_mode = req.query;
+    console.log(new_mode);
+    n_res = res;
+    res.send('<a href="/send_res">dflkjdflgkdflgk</a>');
+});
+
+app.get('/send_res',function (req, res) {
+    n_res.end('1221323423434554');
+});
