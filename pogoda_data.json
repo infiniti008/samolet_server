@@ -2,6 +2,7 @@
     "today":{
         "uri" : "http://www.accuweather.com/ru/by/minsk/28580/daily-weather-forecast/28580?day=1",
         "sun_up" : "#feature-sun > div > ul > li:nth-child(1) > span",
-        "sun_down" : "#feature-sun > div > ul > li:nth-child(2) > span"
+        "sun_down" : "#feature-sun > div > ul > li:nth-child(2) > span",
+        "cur_temp" : "#current-city-tab > a > span.local-temp"
     }
 }
