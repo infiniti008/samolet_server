@@ -55,7 +55,7 @@ Day.prototype.reload_mode = function() {
     this.reload_current_time();
     if(go_to_debug == true){
         //debug mode
-        this.mode = '1';
+        this.mode = '2';
         go_to_debug = false;
     }
     else if(this.curent_time > this.start && this.curent_time < this.end){
@@ -64,7 +64,7 @@ Day.prototype.reload_mode = function() {
     }
     else{
         //day mode
-        this.mode = '2';
+        this.mode = '1';
     }
 };
 //method to set current data
@@ -138,6 +138,7 @@ app.get('/put_temp',function (req, res) {
     console.log(req.query);
     res.end(day.mode);
     console.log('Send to esp mode = ' + day.mode);
+    console.log(day.curent_time);
     //If exist label to change day
     if(go_to_newDay == true){
         day.set_time();
