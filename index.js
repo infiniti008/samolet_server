@@ -1,5 +1,6 @@
 var express = require('express');
 var fs = require('fs');
+var db = require('./db/db.js');
 
 var config = require('./config.json');
 var request = require('request'), cheerio = require('cheerio');
@@ -12,6 +13,7 @@ var go_to_newDay = false; //variable to reload info about new day
 
 
 var app = express();
+db.create_db();
 app.use(express.static(__dirname + '/public'));
 // app.use('/source', express.static('/home/android/linux_list/so'));
 
@@ -141,10 +143,12 @@ app.get('/put_temp',function (req, res) {
     console.log(day.curent_time);
     //If exist label to change day
     if(go_to_newDay == true){
+        go_to_newDay = false;
         day.set_time();
         day.set_cur_data();
         day.reload_current_time();
     }
+    db.add_temp(day.date, day.curent_time, req.query.temp, day.day);
 });
 
 app.get('/',function (req, res) {
@@ -156,6 +160,16 @@ app.get('/',function (req, res) {
 
 app.get('/go_to_debug',function (req, res) {
     go_to_debug = true;
+    db.select_last(function (tim) {
+        console.log("Send to server last time of put_temp");
+        res.send(tim);
+    });
     console.log("Change GO_TO_DEBUG to true");
-    res.send('ok');
 });
+
+app.get('/cancel_debug',function (req, res) {
+    go_to_debug = false;
+        res.send('ok');
+    console.log("Change GO_TO_DEBUG to false");
+});
+
