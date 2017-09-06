@@ -1,10 +1,10 @@
 var express = require('express');
 var fs = require('fs');
-var db = require('./db/db.js');
+var db = require(__dirname + '/db/db.js');
 
-var config = require('./config.json');
+var config = require(__dirname + '/config.json');
 var request = require('request'), cheerio = require('cheerio');
-var pogoda_data = require('./pogoda_data.json');
+var pogoda_data = require(__dirname +'/pogoda_data.json');
 
 var cur_mode = '3';
 var go_to_debug = false; //variable to go to debug mode

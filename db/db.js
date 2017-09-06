@@ -1,5 +1,5 @@
 var fs = require('fs');
-var db_name = "./db/temp.db";
+var db_name = __dirname + "/temp.db";
 
 //Создание базы данных
 

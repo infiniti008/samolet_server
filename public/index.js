@@ -24,7 +24,7 @@ function go_to_debug() {
     var d = new Date();
     var tim_st = time_load_debug - ((d.getHours() * 60) + d.getMinutes());
     // var counter = time_load_debug - tim_st;
-    var counter = 10;
+    var counter = tim_st*60;
     id_timer = setInterval(function(){
         document.getElementById('id_input').innerHTML = counter;
         if(counter == 0){
